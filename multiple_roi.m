@@ -65,28 +65,19 @@ while hasFrame(v)
 
 
         % Create the Hough transform using the binary image.
-          [H,T,R] = hough(masked_frame);
-      %   figure; imshow(H,[],'XData',T,'YData',R,...
-       %             'InitialMagnification','fit');
-    %     xlabel('\theta'), ylabel('\rho');
-    %     axis on, axis normal, hold on;
-
-        P  = houghpeaks(H,5,'threshold',ceil(0.3*max(H(:))));
-    %     x = T(P(:,2)); y = R(P(:,1));
-    %     plot(x,y,'s','color','white');
-
+        [H,T,R] = hough(masked_frame);
+        P  = houghpeaks(H,5,'threshold',ceil(0.3*max(H(:))));    
         lines = houghlines(masked_frame,T,R,P,'FillGap',5,'MinLength',35);
-        % subplot(2,1,1); imshow(masked_frame);
-        %subplot(2,1,2);
+        
+        
         imshow(video), hold on
-        max_llen = 0; max_rlen=0; % max right and left length
+        max_llen = 0; max_rlen=0; % max right lane and left lane length
         for k = 1:length(lines)
            xy = [lines(k).point1; lines(k).point2];
-    %        plot(xy(:,1),xy(:,2),'LineWidth',2,'Color','green');
-
+           
            % Plot beginnings and ends of lines
-    %        plot(xy(1,1),xy(1,2),'x','LineWidth',2,'Color','yellow');
-    %        plot(xy(2,1),xy(2,2),'x','LineWidth',2,'Color','red');
+            plot(xy(1,1),xy(1,2),'x','LineWidth',2,'Color','yellow');
+            plot(xy(2,1),xy(2,2),'x','LineWidth',2,'Color','red');
 
     %      Determine the endpoints of the longest line segment
            len = norm(lines(k).point1 - lines(k).point2);

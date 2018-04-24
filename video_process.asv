@@ -14,7 +14,7 @@ xi = [0 1 0.65 0.35 0]*dimensions(2);
 yi = [1 1 0.5 0.5 1]*dimensions(1); 
 BW = poly2mask(xi,yi,dimensions(1), dimensions(2));
 
-pleft_line = 0; pright_line = 0
+
 while hasFrame(v)
     
     % Img = imread('coins.png');
@@ -47,6 +47,7 @@ while hasFrame(v)
     
     imshow(video), hold on
     max_llen = 0; max_rlen=0; % max right and left length
+    
     for k = 1:length(lines)
        xy = [lines(k).point1; lines(k).point2];
 %        plot(xy(:,1),xy(:,2),'LineWidth',2,'Color','green');
@@ -63,27 +64,12 @@ while hasFrame(v)
             if (len > max_llen)
               max_llen = len;
               xy_llong = xy;
-              if pleft_line == 0
-                pleft_line = xy_llong;
-              elseif norm(xy_llong(1,:) - pleft_line(1,:)) > 5
-                  xy_llong = pleft_line;
-              else
-                  pleft_line = xy_llong;
-              end
             end
        % begining of the line is at the right side    
        else
             if (len > max_rlen)
               max_rlen = len;
               xy_rlong = xy;
-              if pright_line == 0
-                pright_line = xy_rlong;
-              elseif norm(xy_rlong(1,:) - pright_line(1,:)) > 5
-                  xy_rlong = pright_line;
-              else
-                  pright_line = xy_rlong;
-                  
-              end
             end
        end
 
