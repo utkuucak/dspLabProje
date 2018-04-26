@@ -48,41 +48,40 @@ while hasFrame(v)
     imshow(video), hold on
     max_llen = 0; max_rlen=0; % max right and left length
     for k = 1:length(lines)
-        line = lines(k);
-         % xy = [lines(k).point1; lines(k).point2];
-         % plot(xy(:,1),xy(:,2),'LineWidth',2,'Color','green');
+       xy = [lines(k).point1; lines(k).point2];
+%        plot(xy(:,1),xy(:,2),'LineWidth',2,'Color','green');
     
        % Plot beginnings and ends of lines
        % plot(xy(1,1),xy(1,2),'x','LineWidth',2,'Color','yellow');
        % plot(xy(2,1),xy(2,2),'x','LineWidth',2,'Color','red');
 
 %      Determine the endpoints of the longest line segment
-       len = norm(line.point1 - line.point2);
+       len = norm(lines(k).point1 - lines(k).point2);
        
-       % check if slope of the line negative
-       if(line.theta < 0)
+       % check if the begining of the line is at the left side of frame
+       if(xy(1,1) < dimensions(2)*0.5)
             if (len > max_llen)
               max_llen = len;
-              max_left_line = line;
-              if any( structfun(@isempty, pleft_line) )
-                pleft_line = max_left_line;
-              elseif abs(max_left_line.theta - pleft_line.theta) > 5
-                  max_left_line = pleft_line;
+              xy_llong = xy;
+              if pleft_line == 0
+                pleft_line = xy_llong;
+              elseif norm(xy_llong(1,:) - pleft_line(1,:)) > 5
+                  xy_llong = pleft_line;
               else
-                  pleft_line = max_left_line;
+                  pleft_line = xy_llong;
               end
             end
        % begining of the line is at the right side    
        else
             if (len > max_rlen)
               max_rlen = len;
-              max_right_line = line;
+              xy_rlong = xy;
               if pright_line == 0
-                pright_line = max_right_line;
-              elseif abs(max_right_line.theta - pright_line.theta) > 5
-                  max_right_line = pright_line;
+                pright_line = xy_rlong;
+              elseif norm(xy_rlong(1,:) - pright_line(1,:)) > 5
+                  xy_rlong = pright_line;
               else
-                  pright_line = max_right_line;
+                  pright_line = xy_rlong;
                   
               end
             end
@@ -90,8 +89,8 @@ while hasFrame(v)
 
     end
 
-    plot(max_left_line.point1,max_left_line.point2,'LineWidth',2,'Color','cyan');
-    plot(max_right_line.point1,max_right_line.point2,'LineWidth',2,'Color','cyan');
+    plot(xy_llong(:,1),xy_llong(:,2),'LineWidth',2,'Color','cyan');
+    plot(xy_rlong(:,1),xy_rlong(:,2),'LineWidth',2,'Color','cyan');
     %image(video, 'Parent', currAxes);
     %currAxes.Visible = 'off';   
     pause(1/(v.FrameRate*1000000));
